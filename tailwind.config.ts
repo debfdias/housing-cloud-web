@@ -27,6 +27,7 @@ export default {
       "base-button": "#E6E5E5",
       "base-input": "#EDEDED",
       "base-card": "#F3F2F2",
+      "red-alert": "#ff5555",
 
       background: "#8047F8",
       white: "#FFFFFF",

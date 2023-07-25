@@ -10,10 +10,27 @@ interface ModalProps {
 export function Form({ onModalOpen, onSubmit }: ModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState(false);
+
   function handleSubmit() {
     onModalOpen(false);
     alert("Application sent!");
   }
+
+  function isValidEmail(email: string) {
+    return /\S+@\S+\.\S+/.test(email);
+  }
+
+  function handleChange(e: any) {
+    if (!isValidEmail(e.target.value)) {
+      setError(true);
+    } else {
+      setError(false);
+    }
+
+    setEmail(e.target.value);
+  }
+
   return (
     <div className="fixed inset-0 z-20 bg-gray-700/70">
       <div
@@ -58,19 +75,30 @@ export function Form({ onModalOpen, onSubmit }: ModalProps) {
             <label htmlFor="email" className="text-sm text-base-subtitle">
               E-mail
             </label>
+
             <input
-              className="text-md mb-6 mt-1 block w-full rounded-md bg-smoke-gray p-2 text-base-title placeholder:text-base-subtitle focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+              className="text-md mb-8 mt-1 block w-full rounded-md bg-smoke-gray p-2 text-base-title placeholder:text-base-subtitle focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
               name="email"
               placeholder="E-mail"
-              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              onChange={handleChange}
             />
+            <div className="">
+              {error ? (
+                <span className="-mt-5 flex text-sm text-red-alert">
+                  Invalid e-mail.
+                </span>
+              ) : (
+                <>{"\n"}</>
+              )}
+            </div>
           </fieldset>
 
           <button
             className="text-md flex select-none justify-center rounded-md  bg-purple-500 p-3 font-medium text-base-title hover:bg-purple-600 focus:outline-none focus-visible:bg-purple-500 focus-visible:ring focus-visible:ring-opacity-75 disabled:bg-smoke-gray disabled:text-gray-300"
             type="submit"
             onClick={handleSubmit}
-            disabled={name.length < 1 || email.length < 1}
+            disabled={name.length < 1 || email.length < 1 || error}
           >
             I'm interested!
           </button>
