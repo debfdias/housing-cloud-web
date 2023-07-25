@@ -1,6 +1,7 @@
 import { ClipboardText, MagnifyingGlass } from "@phosphor-icons/react";
 import Head from "next/head";
 import { useState } from "react";
+import { Modal } from "~/Modal";
 import { Card } from "~/components/Card";
 import { Form } from "~/components/Form";
 import Header from "~/components/Header";
@@ -9,7 +10,7 @@ import { api } from "~/utils/api";
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
-  const [unitId, setUnitId] = useState("");
+  const [houseUnit, setHouseUnit] = useState<any>();
   const { data: houseUnits, refetch: refetchHouseUnits } =
     api.houseUnits.getAll.useQuery();
 
@@ -31,18 +32,18 @@ export default function Home() {
       name: e.target.name.value,
       email: e.target.email.value,
     });
-    addHouseUnitInterest.mutate({ id: unitId });
+    addHouseUnitInterest.mutate({ id: houseUnit!.id });
     await refetchHouseUnits();
   }
 
-  function onOpenModal(id: string) {
+  function onOpenModal(houseUnit: any) {
     setModalOpen(true);
-    setUnitId(id);
+    setHouseUnit(houseUnit);
   }
 
-  function onOpenDetailsModal(id: string) {
+  function onOpenDetailsModal(houseUnit: any) {
     setModalDetailsOpen(true);
-    setUnitId(id);
+    setHouseUnit(houseUnit);
   }
 
   const deletePost = api.houseUnits.delete.useMutation({
@@ -67,13 +68,16 @@ export default function Home() {
         {modalOpen && (
           <Form onModalOpen={setModalOpen} onSubmit={handleSubmit} />
         )}
+        {modalDetailsOpen && (
+          <Modal onModalOpen={setModalDetailsOpen} houseUnit={houseUnit} />
+        )}
         {houseUnits?.map((house) => (
           <div>
             <Card unit={house} />
             <div className="-mt-5 flex gap-4">
               <button
                 className="font-mono rounded-md bg-purple-300 p-2 text-purple-700 transition duration-0 hover:bg-purple-500 hover:text-purple-900 hover:duration-500"
-                onClick={() => onOpenDetailsModal(house.id)}
+                onClick={() => onOpenDetailsModal(house)}
               >
                 <div className="mx-3 flex items-center justify-center gap-2">
                   <MagnifyingGlass size={24} />
@@ -83,7 +87,7 @@ export default function Home() {
 
               <button
                 className="font-mono rounded-md bg-purple-300 p-2 text-purple-700 transition duration-0 hover:bg-purple-500 hover:text-purple-900 hover:duration-500"
-                onClick={() => onOpenModal(house.id)}
+                onClick={() => onOpenModal(house)}
               >
                 <div className="mx-3 flex items-center justify-center gap-2">
                   <ClipboardText size={24} />

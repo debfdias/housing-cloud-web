@@ -3,12 +3,11 @@ import clsx from "clsx";
 import { useState } from "react";
 
 interface ModalProps {
-  houseUnit?: any;
   onModalOpen: (value: boolean) => void;
   onSubmit?: (event: any) => void;
 }
 
-export function Form({ houseUnit, onModalOpen, onSubmit }: ModalProps) {
+export function Form({ onModalOpen, onSubmit }: ModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   function handleSubmit() {
@@ -28,7 +27,7 @@ export function Form({ houseUnit, onModalOpen, onSubmit }: ModalProps) {
       >
         <button
           className={clsx(
-            "focus-visible:purple-500 absolute right-3.5 top-3.5 inline-flex items-center justify-center rounded-full p-1 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75"
+            "focus-visible:purple-500 absolute right-3.5 top-3.5 inline-flex items-center justify-center rounded-full p-1 hover:bg-purple-600 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75"
           )}
         >
           <XCircle

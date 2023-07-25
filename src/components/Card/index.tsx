@@ -32,19 +32,19 @@ export function Card({ unit }: CardProps) {
             <div>
               <div className="mt-2 flex items-center">
                 <Bed size={24} color="#bcbcbc" weight="fill" />
-                <div className="text-md ml-4 text-base-subtitle">
+                <div className="ml-4 text-sm text-base-subtitle">
                   Bedrooms: {unit.bedrooms}
                 </div>
               </div>
               <div className="mt-1 flex items-center">
                 <MapTrifold size={24} color="#bcbcbc" weight="fill" />
-                <div className="text-md ml-4 text-base-subtitle">
+                <div className="ml-4 text-sm text-base-subtitle">
                   Distance: {unit.distance} km
                 </div>
               </div>
               <div className="mt-1 flex items-center">
                 <ClipboardText size={24} color="#bcbcbc" weight="fill" />
-                <div className="text-md ml-4 text-base-subtitle">
+                <div className="ml-4 text-sm text-base-subtitle">
                   Applications: {unit.interestAmount}
                 </div>
               </div>
