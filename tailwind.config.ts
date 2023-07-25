@@ -5,18 +5,22 @@ export default {
   theme: {
     extend: {},
     colors: {
-      "yellow-dark": "#C47F17",
-      yellow: "#DBAC2C",
-      "yellow-light": "#F1E9C9",
-
-      "purple-dark": "#4B2995",
+      "purple-300": "#EBE5F9",
+      "purple-500": "#967ad7",
+      "purple-600": "#805fcb",
+      "purple-700": "#4B2995",
+      "purple-900": "#321d5f",
       purple: "#8047F8",
-      "purple-light": "#EBE5F9",
 
       "light-gray": "#44475a",
+      "smoke-gray": "#53566a",
+      pink: "#ff79c6",
+      "pink-light": "#efb8d8",
+      "gray-700": "#1f1f1f",
+      "gray-300": "#989898",
 
-      "base-title": "#272221",
-      "base-subtitle": "#403937",
+      "base-title": "#f8f8f2",
+      "base-subtitle": "#bcbcbc",
       "base-text": "#574F4D",
       "base-label": "#8D8686",
       "base-hover": "#D7D5D5",
@@ -26,6 +30,9 @@ export default {
 
       background: "#8047F8",
       white: "#FFFFFF",
+    },
+    fontFamily: {
+      roboto: ["Roboto", "sans-serif"],
     },
   },
   plugins: [],

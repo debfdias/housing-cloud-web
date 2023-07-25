@@ -1,13 +1,15 @@
+import { ClipboardText, MagnifyingGlass } from "@phosphor-icons/react";
 import Head from "next/head";
 import { useState } from "react";
+import { Card } from "~/components/Card";
+import { Form } from "~/components/Form";
 import Header from "~/components/Header";
 import { api } from "~/utils/api";
 
 export default function Home() {
-  const [student, setStudent] = useState({
-    name: "",
-    email: "",
-  });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
+  const [unitId, setUnitId] = useState("");
   const { data: houseUnits, refetch: refetchHouseUnits } =
     api.houseUnits.getAll.useQuery();
 
@@ -23,14 +25,34 @@ export default function Home() {
     },
   });
 
-  async function handleSubmit(e: any, id: string) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
-    setStudent({ ...student });
-
-    createStudent.mutate(student);
-    addHouseUnitInterest.mutate({ id });
+    createStudent.mutate({
+      name: e.target.name.value,
+      email: e.target.email.value,
+    });
+    addHouseUnitInterest.mutate({ id: unitId });
     await refetchHouseUnits();
-    setStudent({ name: "", email: "" });
+  }
+
+  function onOpenModal(id: string) {
+    setModalOpen(true);
+    setUnitId(id);
+  }
+
+  function onOpenDetailsModal(id: string) {
+    setModalDetailsOpen(true);
+    setUnitId(id);
+  }
+
+  const deletePost = api.houseUnits.delete.useMutation({
+    onSuccess: () => {
+      refetchHouseUnits();
+    },
+  });
+
+  async function handleDelete(id: string) {
+    deletePost.mutate({ id });
   }
 
   return (
@@ -41,9 +63,35 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main>
-        {houseUnits?.map((unit) => (
-          <>{unit.name}</>
+      <main className="mx-20 mb-1 grid gap-12 p-12 sm:grid-cols-2">
+        {modalOpen && (
+          <Form onModalOpen={setModalOpen} onSubmit={handleSubmit} />
+        )}
+        {houseUnits?.map((house) => (
+          <div>
+            <Card unit={house} />
+            <div className="-mt-5 flex gap-4">
+              <button
+                className="font-mono rounded-md bg-purple-300 p-2 text-purple-700 transition duration-0 hover:bg-purple-500 hover:text-purple-900 hover:duration-500"
+                onClick={() => onOpenDetailsModal(house.id)}
+              >
+                <div className="mx-3 flex items-center justify-center gap-2">
+                  <MagnifyingGlass size={24} />
+                  <div className="text-md font-semibold">See details</div>
+                </div>
+              </button>
+
+              <button
+                className="font-mono rounded-md bg-purple-300 p-2 text-purple-700 transition duration-0 hover:bg-purple-500 hover:text-purple-900 hover:duration-500"
+                onClick={() => onOpenModal(house.id)}
+              >
+                <div className="mx-3 flex items-center justify-center gap-2">
+                  <ClipboardText size={24} />
+                  <div className="text-md font-semibold">Apply</div>
+                </div>
+              </button>
+            </div>
+          </div>
         ))}
       </main>
     </>
