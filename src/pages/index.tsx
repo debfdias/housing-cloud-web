@@ -14,12 +14,16 @@ export default function Home() {
   const [filters, setFilters] = useState({
     bedrooms: -1,
     distance: -1,
+    minPrice: -1,
+    maxPrice: -1,
   });
 
   const { data: houseUnits, refetch: refetchHouseUnits } =
     api.houseUnits.getAll.useQuery({
       bedrooms: filters.bedrooms,
       distance: filters.distance,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
     });
 
   const createStudent = api.students.create.useMutation({
@@ -128,6 +132,12 @@ export default function Home() {
               name="min"
               placeholder="Min price"
               type="number"
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  minPrice: e.target.valueAsNumber,
+                })
+              }
             />
           </fieldset>
 
@@ -140,6 +150,12 @@ export default function Home() {
               name="max"
               placeholder="Max price"
               type="number"
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  maxPrice: e.target.valueAsNumber,
+                })
+              }
             />
           </fieldset>
         </div>

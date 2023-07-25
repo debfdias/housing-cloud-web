@@ -7,43 +7,34 @@ export const houseUnitRouter = createTRPCRouter({
       z.object({
         bedrooms: z.any(),
         distance: z.any(),
+        minPrice: z.any(),
+        maxPrice: z.any(),
       })
     )
     .query(({ ctx, input }) => {
       console.log(input);
-      if (Number.isNaN(input.bedrooms) && Number.isNaN(input.distance)) {
-        return ctx.prisma.houseUnit.findMany();
-      }
-      if (input.bedrooms === -1 && input.distance === -1) {
-        return ctx.prisma.houseUnit.findMany();
-      }
-      if (
-        (Number.isNaN(input.bedrooms) || input.bedrooms === -1) &&
-        (Number.isNaN(input.distance) || input.distance === -1)
-      ) {
-        return ctx.prisma.houseUnit.findMany();
-      }
-      if (
-        input.bedrooms > 0 &&
-        (input.distance === -1 || Number.isNaN(input.distance))
-      ) {
-        return ctx.prisma.houseUnit.findMany({
-          where: { bedrooms: input.bedrooms },
-        });
-      }
-      if (
-        input.distance > 0 &&
-        (input.bedrooms === -1 || Number.isNaN(input.bedrooms))
-      ) {
-        return ctx.prisma.houseUnit.findMany({
-          where: { distance: input.distance },
-        });
-      }
-      if (input.distance > 0 && input.bedrooms > 0) {
-        return ctx.prisma.houseUnit.findMany({
-          where: { distance: input.distance, bedrooms: input.bedrooms },
-        });
-      }
+      return ctx.prisma.houseUnit.findMany({
+        where: {
+          bedrooms:
+            input.bedrooms !== -1 && !Number.isNaN(input.bedrooms)
+              ? input.bedrooms
+              : undefined,
+          distance:
+            input.distance !== -1 && !Number.isNaN(input.distance)
+              ? input.distance
+              : undefined,
+          price: {
+            lte:
+              input.maxPrice !== -1 && !Number.isNaN(input.maxPrice)
+                ? input.maxPrice
+                : undefined,
+            gte:
+              input.minPrice !== -1 && !Number.isNaN(input.minPrice)
+                ? input.minPrice
+                : undefined,
+          },
+        },
+      });
     }),
   getOne: publicProcedure
     .input(z.object({ id: z.string() }))
