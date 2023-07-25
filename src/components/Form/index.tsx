@@ -12,11 +12,6 @@ export function Form({ onModalOpen, onSubmit }: ModalProps) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
 
-  function handleSubmit() {
-    onModalOpen(false);
-    alert("Application sent!");
-  }
-
   function isValidEmail(email: string) {
     return /\S+@\S+\.\S+/.test(email);
   }
@@ -97,7 +92,6 @@ export function Form({ onModalOpen, onSubmit }: ModalProps) {
           <button
             className="text-md flex select-none justify-center rounded-md  bg-purple-500 p-3 font-medium text-base-title hover:bg-purple-600 focus:outline-none focus-visible:bg-purple-500 focus-visible:ring focus-visible:ring-opacity-75 disabled:bg-smoke-gray disabled:text-gray-300"
             type="submit"
-            onClick={handleSubmit}
             disabled={name.length < 1 || email.length < 1 || error}
           >
             I'm interested!

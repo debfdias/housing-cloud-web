@@ -2,9 +2,49 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const houseUnitRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.houseUnit.findMany();
-  }),
+  getAll: publicProcedure
+    .input(
+      z.object({
+        bedrooms: z.any(),
+        distance: z.any(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      console.log(input);
+      if (Number.isNaN(input.bedrooms) && Number.isNaN(input.distance)) {
+        return ctx.prisma.houseUnit.findMany();
+      }
+      if (input.bedrooms === -1 && input.distance === -1) {
+        return ctx.prisma.houseUnit.findMany();
+      }
+      if (
+        (Number.isNaN(input.bedrooms) || input.bedrooms === -1) &&
+        (Number.isNaN(input.distance) || input.distance === -1)
+      ) {
+        return ctx.prisma.houseUnit.findMany();
+      }
+      if (
+        input.bedrooms > 0 &&
+        (input.distance === -1 || Number.isNaN(input.distance))
+      ) {
+        return ctx.prisma.houseUnit.findMany({
+          where: { bedrooms: input.bedrooms },
+        });
+      }
+      if (
+        input.distance > 0 &&
+        (input.bedrooms === -1 || Number.isNaN(input.bedrooms))
+      ) {
+        return ctx.prisma.houseUnit.findMany({
+          where: { distance: input.distance },
+        });
+      }
+      if (input.distance > 0 && input.bedrooms > 0) {
+        return ctx.prisma.houseUnit.findMany({
+          where: { distance: input.distance, bedrooms: input.bedrooms },
+        });
+      }
+    }),
   getOne: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -32,38 +72,6 @@ export const houseUnitRouter = createTRPCRouter({
       return ctx.prisma.houseUnit.delete({
         where: {
           id: input.id,
-        },
-      });
-    }),
-  filterByBedrooms: publicProcedure
-    .input(z.object({ bedrooms: z.number() }))
-    .query(({ input, ctx }) => {
-      return ctx.prisma.houseUnit.findMany({
-        where: {
-          bedrooms: input.bedrooms,
-        },
-      });
-    }),
-  filterByDistance: publicProcedure
-    .input(z.object({ distance: z.number() }))
-    .query(({ input, ctx }) => {
-      return ctx.prisma.houseUnit.findMany({
-        where: {
-          distance: {
-            lte: input.distance,
-          },
-        },
-      });
-    }),
-  filterByPrice: publicProcedure
-    .input(z.object({ min: z.number(), max: z.number() }))
-    .query(({ input, ctx }) => {
-      return ctx.prisma.houseUnit.findMany({
-        where: {
-          price: {
-            lte: input.max,
-            gte: input.min,
-          },
         },
       });
     }),
