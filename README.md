@@ -24,6 +24,15 @@ $ cd housing-cloud-web
 ```bash
 # Install dependencies
 $ yarn install
+```
+Create an .env file in project's root:
+
+```bash
+# Copy this to the .env file
+DATABASE_URL="file:./db.sqlite"
+
+# Run DB migrations
+$ yarn prisma migrate dev
 
 # Run DB seed
 $ npx prisma db seed
